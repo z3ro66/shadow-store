@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHADOW | GOD MODE</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --accent: #ff003c; --blue: #00d2ff; --bg: #000; --glass: rgba(255, 255, 255, 0.04); --border: rgba(255, 255, 255, 0.1); }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', -apple-system, sans-serif; margin: 0; padding: 15px; overflow-x: hidden; }
+        
+        /* AUTH GATE */
+        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; backdrop-filter: blur(20px); }
+        #auth-gate input { width: 100%; padding: 20px; background: var(--glass); border: 1px solid var(--border); border-radius: 20px; color: #fff; text-align: center; font-size: 1.5rem; margin-bottom: 20px; box-shadow: 0 0 30px rgba(255, 0, 60, 0.1); }
+        #auth-gate button { width: 100%; padding: 20px; background: var(--accent); border: none; border-radius: 20px; color: #fff; font-weight: 900; letter-spacing: 2px; }
+
+        /* DASHBOARD LAYOUT */
+        #main-view { display: none; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5px; margin-bottom: 20px; }
+        .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 5px; color: #fff; text-shadow: 0 0 15px var(--accent); }
+        .live-status { font-size: 0.6rem; background: rgba(0, 255, 136, 0.1); color: #00ff88; padding: 5px 12px; border-radius: 20px; border: 1px solid #00ff88; display: flex; align-items: center; gap: 5px; }
+        .dot { width: 6px; height: 6px; background: #00ff88; border-radius: 50%; animation: pulse 1s infinite; }
+
+        /* BENTO GRID STATS */
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 28px; padding: 20px; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 40px; height: 40px; background: var(--accent); filter: blur(40px); opacity: 0.2; }
+        .card.big { grid-column: span 2; }
+        .card label { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+        .card .val { font-size: 1.8rem; font-weight: 900; margin-top: 8px; font-variant-numeric: tabular-nums; }
+        .card .sub { font-size: 0.75rem; margin-top: 5px; color: #555; }
+
+        /* CHART SECTIONS */
+        .chart-container { margin-top: 15px; width: 100%; height: 180px; }
+        
+        /* RANKING */
+        .ranking { margin-top: 20px; }
+        .rank-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 20px; margin-bottom: 8px; border: 1px solid var(--border); }
+        .rank-num { width: 30px; height: 30px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; }
+        .rank-info { flex: 1; }
+        .rank-name { font-size: 0.9rem; font-weight: 600; display: block; }
+        .rank-hits { font-size: 0.75rem; color: var(--blue); font-family: monospace; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div style="display: flex; gap: 10px; padding: 15px; background: #0a0a0a; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 9999;">
+    <a href="admin2.html" style="color: white; text-decoration: none; font-size: 12px; font-weight: 900; background: #222; padding: 8px 15px; border-radius: 8px;">📊 DASHBOARD</a>
+    <a href="converter.html" style="color: #888; text-decoration: none; font-size: 12px; font-weight: 900; padding: 8px 15px;">🔗 LINK CONVERTER</a>
+    <a href="uploader.html" style="color: #888; text-decoration: none; font-size: 12px; font-weight: 900; padding: 8px 15px;">🖼️ IMAGE HOST</a>
+</div>
+
+<div id="auth-gate">
+    <div style="font-size: 0.7rem; color: #555; letter-spacing: 5px; margin-bottom: 10px;">ENCRYPTED ACCESS</div>
+    <div class="logo" style="font-size: 2.5rem; margin-bottom: 40px;">SHADOW</div>
+    <input type="password" id="pass" placeholder="••••••••">
+    <button onclick="unlock()">INITIALIZE</button>
+</div>
+
+<div id="main-view">
+    <div class="header">
+        <div class="logo">SHADOW CORE</div>
+        <div class="live-status"><div class="dot"></div> SYNCED</div>
+    </div>
+
+    <div class="bento-grid">
+        <div class="card big">
+            <label>Net Worth Est.</label>
+            <div class="val" id="v-total" style="color: var(--accent);">0 zł</div>
+            <div class="sub">Total inventory market value</div>
+        </div>
+
+        <div class="card">
+            <label>Traffic</label>
+            <div class="val" id="v-clicks">0</div>
+            <div class="sub" id="v-score">0% Score</div>
+        </div>
+
+        <div class="card">
+            <label>Avg. Ticket</label>
+            <div class="val" id="v-avg" style="color: var(--blue);">0</div>
+            <div class="sub">PLN per unit</div>
+        </div>
+
+        <div class="card big" style="padding-bottom: 30px;">
+            <label>Inventory Split</label>
+            <div class="chart-container">
+                <canvas id="splitChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <label>Beats</label>
+            <div class="val" id="c-beats">0</div>
+        </div>
+        <div class="card">
+            <label>Kits</label>
+            <div class="val" id="c-kits">0</div>
+        </div>
+    </div>
+
+    <div style="padding: 10px 5px; font-weight: 900; font-size: 0.8rem; letter-spacing: 2px; color: #444;">🔥 POPULARITY FEED</div>
+    <div id="rank-list" class="ranking"></div>
+
+    <div style="height: 50px;"></div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDLj6TIdHvupZhXTgf2fideGGZSgBkgOHM",
+        authDomain: "shadowstore-49ff4.firebaseapp.com",
+        projectId: "shadowstore-49ff4",
+        storageBucket: "shadowstore-49ff4.firebasestorage.app",
+        messagingSenderId: "286001305055",
+        appId: "1:286001305055:web:81e1762b09058fadb6a06a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let splitChart;
+
+    function unlock() {
+        if(document.getElementById('pass').value === "KU06102009BAsen") {
+            document.getElementById('auth-gate').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('auth-gate').style.display = 'none';
+                document.getElementById('main-view').style.display = 'block';
+                initCharts();
+                startIntelligence();
+            }, 500);
+        } else { alert("WRONG KEY"); }
+    }
+
+    function initCharts() {
+        const ctx = document.getElementById('splitChart').getContext('2d');
+        splitChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Beats', 'Kits'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#ff003c', '#00d2ff'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'right', labels: { color: '#888', font: { size: 10, weight: '900' } } } },
+                cutout: '70%'
+            }
+        });
+    }
+
+    function startIntelligence() {
+        db.collection("products").onSnapshot(snap => {
+            let clicks = 0, totalVal = 0, b = 0, k = 0;
+            let items = [];
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                const c = d.clicks || 0;
+                const p = parseFloat(d.price) || 0;
+                clicks += c;
+                totalVal += p;
+                if(d.category === 'beat') b++; else k++;
+                items.push({ name: d.name, clicks: c });
+            });
+
+            // UPDATE UI
+            document.getElementById('v-total').innerText = totalVal.toLocaleString() + " zł";
+            document.getElementById('v-clicks').innerText = clicks.toLocaleString();
+            document.getElementById('v-avg').innerText = snap.empty ? 0 : Math.round(totalVal / snap.size) + " zł";
+            document.getElementById('v-score').innerText = (clicks > 0 ? (snap.size / clicks * 100).toFixed(1) : 0) + "% Engagement";
+            document.getElementById('c-beats').innerText = b;
+            document.getElementById('c-kits').innerText = k;
+
+            // UPDATE CHART
+            splitChart.data.datasets[0].data = [b, k];
+            splitChart.update();
+
+            // UPDATE RANKING
+            items.sort((x, y) => y.clicks - x.clicks);
+            const list = document.getElementById('rank-list');
+            list.innerHTML = '';
+            items.slice(0, 10).forEach((item, index) => {
+                list.innerHTML += `
+                    <div class="rank-item">
+                        <div class="rank-num">${index + 1}</div>
+                        <div class="rank-info">
+                            <span class="rank-name">${item.name}</span>
+                            <span class="rank-hits">${item.clicks} GLOBAL HITS</span>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    }
+</script>
+</body>
+</html>

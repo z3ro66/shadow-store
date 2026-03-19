@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>SHADOW | Link Converter</title>
+    <style>
+        :root { --bg: #000; --accent: #ff003c; --blue: #00d2ff; --border: rgba(255, 255, 255, 0.08); }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        nav {
+            background: #000; border-bottom: 1px solid #1a1a1a; padding: 12px; 
+            display: flex; flex-direction: row; justify-content: center; gap: 15px; 
+            width: 100%; box-sizing: border-box;
+        }
+        nav a { color: #555; text-decoration: none; font-weight: 900; font-size: 0.7rem; letter-spacing: 1px; padding: 10px; }
+        nav a.active { color: #fff; background: #111; border-radius: 8px; }
+
+        .wrapper { width: 90%; max-width: 800px; padding: 40px 0; }
+        textarea { width: 100%; height: 150px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 15px; color: #fff; padding: 15px; box-sizing: border-box; }
+        button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; margin-top: 15px; }
+        
+        .results { margin-top: 30px; background: #0a0a0a; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; }
+        .res-row { display: grid; grid-template-columns: 1fr 2fr; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .res-row div { padding: 12px; font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .name-cell { color: var(--blue); border-right: 1px solid var(--border); }
+        .link-cell { color: #666; font-family: monospace; }
+        .res-row:hover { background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="admin.html" style="color: var(--accent);">← POWRÓT</a>
+    <a href="converter.html" class="active">🔗 LINK CONVERTER</a>
+    <a href="uploader.html">IMAGE HOST</a>
+</nav>
+
+<div class="wrapper">
+    <h1>LINK CONVERTER</h1>
+    <textarea id="inputLinks" placeholder="Wklej linki z Dropboxa..."></textarea>
+    <button onclick="processLinks()">KONWERTUJ</button>
+
+    <div class="results" id="resultsBox" style="display:none;">
+        <div id="res-grid"></div>
+    </div>
+</div>
+
+<script>
+    function processLinks() {
+        const input = document.getElementById('inputLinks').value;
+        const grid = document.getElementById('res-grid');
+        const lines = input.split('\n');
+        grid.innerHTML = '';
+
+        lines.forEach(line => {
+            let raw = line.trim();
+            if(!raw.includes('dropbox.com')) return;
+
+            let fileName = decodeURIComponent(raw.split('/').pop().split('?')[0]).replace(/\.(mp3|wav)/gi, '').replace(/-/g, ' ');
+            let directLink = raw.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+            if(directLink.includes('rlkey=')) {
+                let rlkey = directLink.split('rlkey=')[1].split('&')[0];
+                directLink = directLink.split('?')[0] + "?rlkey=" + rlkey;
+            }
+
+            grid.innerHTML += `<div class="res-row" onclick="copy('${directLink}')">
+                <div class="name-cell">${fileName}</div>
+                <div class="link-cell">${directLink}</div>
+            </div>`;
+        });
+        document.getElementById('resultsBox').style.display = 'block';
+    }
+
+    function copy(text) {
+        navigator.clipboard.writeText(text);
+        alert("Skopiowano link!");
+    }
+</script>
+</body>
+</html>

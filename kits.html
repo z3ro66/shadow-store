@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowStore | Kits</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root { --bg: #050505; --accent: #ff003c; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 40px; }
+        .back-btn { position: fixed; top: 20px; left: 20px; color: #555; text-decoration: none; font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; }
+        .card { background: #0e0e0e; border: 1px solid #1a1a1a; padding: 20px; border-radius: 15px; text-align: center; }
+        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 10px; margin-bottom: 20px; }
+        .buy-btn { display: block; background: var(--accent); color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← POWRÓT</a>
+    <h1 id="k-title">...</h1>
+    <p id="k-desc" style="color:#888"></p>
+    <div class="grid" id="kits-grid"></div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLj6TIdHvupZhXTgf2fideGGZSgBkgOHM",
+            authDomain: "shadowstore-49ff4.firebaseapp.com",
+            projectId: "shadowstore-49ff4",
+            storageBucket: "shadowstore-49ff4.firebasestorage.app",
+            appId: "1:286001305055:web:81e1762b09058fadb6a06a"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 1. Cache dla nagłówka
+        const cached = localStorage.getItem('cache_kits_content');
+        if(cached) {
+            const d = JSON.parse(cached);
+            document.getElementById('k-title').innerText = d.title;
+            document.getElementById('k-desc').innerText = d.description;
+        }
+
+        db.collection("content").doc("kits_page").onSnapshot(doc => {
+            if(doc.exists) {
+                document.getElementById('k-title').innerText = doc.data().title;
+                document.getElementById('k-desc').innerText = doc.data().description;
+                localStorage.setItem('cache_kits_content', JSON.stringify(doc.data()));
+            }
+        });
+
+        // 2. Pobieranie Kitów
+        db.collection("products").where("category", "==", "kit").onSnapshot(snap => {
+            const g = document.getElementById('kits-grid');
+            g.innerHTML = '';
+            let prods = [];
+            snap.forEach(doc => prods.push({id: doc.id, ...doc.data()}));
+            prods.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            prods.forEach(p => {
+                g.innerHTML += `<div class="card">
+                    <img src="${p.cover || 'https://via.placeholder.com/300'}">
+                    <h3>${p.name}</h3><p style="color:var(--accent); font-weight:bold">${p.price} PLN</p>
+                    <a href="${p.shopUrl}" onclick="clickBtn('${p.id}')" target="_blank" class="buy-btn">BUY KIT</a>
+                </div>`;
+            });
+        });
+
+        function clickBtn(id) { db.collection("products").doc(id).update({ clicks: firebase.firestore.FieldValue.increment(1) }); }
+    </script>
+</body>
+</html>
