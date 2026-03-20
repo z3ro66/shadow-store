@@ -2,61 +2,13 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>SHADOW | Ultra Admin</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
     <style>
-        :root {
-            --accent: #ff003c;
-            --accent-glow: rgba(255, 0, 60, 0.3);
-            --bg-dark: #020202;
-            --card-bg: rgba(255, 255, 255, 0.02);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-main: #e0e0e0;
-            --blue: #00d2ff;
-        }
-
-        body {
-            background: var(--bg-dark); color: var(--text-main);
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-        }
-
-        /* --- NAV BAR FIXED --- */
-        nav {
-            background: #000; border-bottom: 1px solid #1a1a1a; padding: 12px; 
-            display: flex; flex-direction: row; justify-content: center; gap: 10px; 
-            position: sticky; top: 0; z-index: 9999; width: 100%; box-sizing: border-box;
-        }
-        nav a {
-            background: #111; color: #888; text-decoration: none; font-size: 10px; 
-            font-weight: 900; padding: 10px 15px; border-radius: 8px; border: 1px solid #222; 
-            white-space: nowrap; transition: 0.3s;
-        }
-        nav a.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% -20%, #1a1a1f, #020202); }
-        .blob { position: absolute; width: 500px; height: 500px; background: var(--accent); filter: blur(150px); border-radius: 50%; opacity: 0.1; animation: pulse 15s infinite alternate; }
-        @keyframes pulse { from { transform: translate(0,0) scale(1); } to { transform: translate(50px, 50px) scale(1.2); } }
-
-        #login-screen { background: rgba(10,10,10,0.8); backdrop-filter: blur(50px); border: 1px solid var(--border); border-radius: 30px; padding: 50px; text-align: center; width: 350px; margin-top: 100px; }
-        #admin-content { display: none; width: 100%; max-width: 1200px; z-index: 10; padding: 40px; box-sizing: border-box; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; }
-        .stat-card .val { font-size: 2.2rem; font-weight: 800; color: #fff; margin-top: 5px; }
-
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .glass-box { background: var(--card-bg); backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: 30px; padding: 30px; position: relative; }
-
-        input, textarea, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,0.4); color: #fff; box-sizing: border-box; }
-        button { background: #fff; color: #000; border: none; padding: 16px; border-radius: 14px; cursor: pointer; width: 100%; font-weight: 700; transition: 0.3s; margin-top: 10px; }
-        button:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent-glow); }
-
-        .row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 15px 25px; border-radius: 18px; margin-bottom: 10px; border: 1px solid transparent; }
-        .edit-txt { color: #007aff; cursor: pointer; font-weight: bold; }
-        .del-txt { color: #ff3b30; cursor: pointer; font-weight: bold; }
-        #mp3-field { display: none; }
+        /* Twoje style zostają bez zmian, są lekkie i nie wpływają na lagowanie */
+        :root{--accent:#ff003c;--accent-glow:rgba(255,0,60,.3);--bg-dark:#020202;--card-bg:rgba(255,255,255,.02);--border:rgba(255,255,255,.08);--text-main:#e0e0e0;--blue:#00d2ff}body{background:var(--bg-dark);color:var(--text-main);font-family:'Inter',sans-serif;margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh}nav{background:#000;border-bottom:1px solid #1a1a1a;padding:12px;display:flex;flex-direction:row;justify-content:center;gap:10px;position:sticky;top:0;z-index:9999;width:100%;box-sizing:border-box}nav a{background:#111;color:#888;text-decoration:none;font-size:10px;font-weight:900;padding:10px 15px;border-radius:8px;border:1px solid #222;white-space:nowrap;transition:.3s}nav a.active{background:var(--accent);color:#fff;border-color:var(--accent)}.liquid-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(circle at 50% -20%,#1a1a1f,#020202)}.blob{position:absolute;width:500px;height:500px;background:var(--accent);filter:blur(150px);border-radius:50%;opacity:.1;animation:pulse 15s infinite alternate}@keyframes pulse{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,50px) scale(1.2)}}#login-screen{background:rgba(10,10,10,.8);backdrop-filter:blur(50px);border:1px solid var(--border);border-radius:30px;padding:50px;text-align:center;width:350px;margin-top:100px}#admin-content{display:none;width:100%;max-width:1200px;z-index:10;padding:40px;box-sizing:border-box}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:30px}.stat-card{background:var(--card-bg);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:25px;text-align:center}.stat-card .val{font-size:2.2rem;font-weight:800;color:#fff;margin-top:5px}.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}.glass-box{background:var(--card-bg);backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:30px;padding:30px;position:relative}input,select,textarea{width:100%;padding:15px;margin:10px 0;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.4);color:#fff;box-sizing:border-box}button{background:#fff;color:#000;border:none;padding:16px;border-radius:14px;cursor:pointer;width:100%;font-weight:700;transition:.3s;margin-top:10px}button:hover{background:var(--accent);color:#fff;box-shadow:0 0 20px var(--accent-glow)}.row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:15px 25px;border-radius:18px;margin-bottom:10px;border:1px solid transparent}.del-txt{color:#ff3b30;cursor:pointer;font-weight:700}.edit-txt{color:#007aff;cursor:pointer;font-weight:700}#mp3-field{display:none}
     </style>
 </head>
 <body>
@@ -74,7 +26,7 @@
     <h1 style="letter-spacing:4px">SHADOW</h1>
     <input type="text" id="u" placeholder="Admin ID">
     <input type="password" id="p" placeholder="Security Key">
-    <button onclick="auth()">UNSEAL</button>
+    <button id="auth-btn">UNSEAL</button>
 </div>
 
 <div id="admin-content">
@@ -88,35 +40,26 @@
     <div class="main-grid">
         <div class="glass-box">
             <h2>🌍 CMS Engine</h2>
-            <select id="sub-sel" onchange="loadSub()">
-                <option value="homepage">HOME PAGE</option>
-                <option value="beats_page">BEATS PAGE</option>
-                <option value="kits_page">KITS PAGE</option>
-            </select>
+            <select id="sub-sel"><option value="homepage">HOME PAGE</option><option value="beats_page">BEATS PAGE</option><option value="kits_page">KITS PAGE</option></select>
             <input type="text" id="sub-t" placeholder="Heading">
             <textarea id="sub-d" placeholder="Description" rows="3"></textarea>
-            <div id="img-edit-field"><input type="text" id="sub-img" placeholder="Background Image URL"></div>
-            <button onclick="saveSub()">SYNC CLOUD</button>
+            <div id="img-edit-field" style="display:none;"><input type="text" id="sub-img" placeholder="Background Image URL"></div>
+            <button id="save-sub-btn">SYNC CLOUD</button>
         </div>
-
         <div class="glass-box">
             <h2 id="form-title">✨ Deploy Release</h2>
             <input type="hidden" id="edit-id">
-            <select id="p-cat" onchange="toggleFields()">
-                <option value="kit">DRUM KIT</option>
-                <option value="beat">EXCLUSIVE BEAT</option>
-            </select>
+            <select id="p-cat"><option value="kit">DRUM KIT</option><option value="beat">EXCLUSIVE BEAT</option></select>
             <input type="text" id="p-n" placeholder="Title">
             <input type="number" id="p-p" placeholder="Price (PLN)">
             <input type="text" id="p-cov" placeholder="Cover URL">
             <div id="mp3-field"><input type="text" id="p-a" placeholder="Preview MP3 URL"></div>
             <input type="text" id="p-s" placeholder="Shop Link">
-            <button id="add-btn" onclick="addProd()">DEPLOY</button>
-            <button id="upd-btn" style="display:none; background:#007aff; color:white;" onclick="updateProd()">UPDATE</button>
-            <button id="cnl-btn" style="display:none; background:#333; color:#fff" onclick="cancelEdit()">CANCEL</button>
+            <button id="add-btn">DEPLOY</button>
+            <button id="upd-btn" style="display:none;background:#007aff;color:#fff">UPDATE</button>
+            <button id="cnl-btn" style="display:none;background:#333;color:#fff">CANCEL</button>
         </div>
-
-        <div class="glass-box" style="grid-column: span 2;">
+        <div class="glass-box" style="grid-column:span 2">
             <h2>📦 Database Inventory</h2>
             <div id="p-list">Wczytywanie...</div>
         </div>
@@ -124,52 +67,72 @@
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDLj6TIdHvupZhXTgf2fideGGZSgBkgOHM",
-        authDomain: "shadowstore-49ff4.firebaseapp.com",
-        projectId: "shadowstore-49ff4",
-        storageBucket: "shadowstore-49ff4.firebasestorage.app",
-        messagingSenderId: "286001305055",
-        appId: "1:286001305055:web:81e1762b09058fadb6a06a"
+(function(){
+    // Dekodowanie kluczy (Base64 dla lekkiej ochrony przed botami)
+    const _0xS=['QUl6YVN5RExqNlRJZEh2dXBaaFhUZ2YyZmlkZUdHWlNna2dPSE0=','c2hhZG93c3RvcmUtNDlmZjQuZmlyZWJhc2VhcHAuY29t','c2hhZG93c3RvcmUtNDlmZjQ=','c2hhZG93c3RvcmUtNDlmZjQuZmlyZWJhc2Vhc2UuYXBw','Mjg2MDAxMzA1MDU1','MToyODYwMDEzMDUwNTU6d2ViOjgxZTE3NjJiMDkwNThmYWRiNmEwNmE=','ai5zZW5rbw==','S1UwNjEwMjAwOUJBc2Vu'];
+    const _0xK=i=>atob(_0xS[i]);
+    
+    firebase.initializeApp({apiKey:_0xK(0),authDomain:_0xK(1),projectId:_0xK(2),storageBucket:_0xK(3),messagingSenderId:_0xK(4),appId:_0xK(5)});
+    const db=firebase.firestore();
+
+    // Logowanie
+    document.getElementById('auth-btn').onclick=function(){
+        if(document.getElementById('u').value===_0xK(6)&&document.getElementById('p').value===_0xK(7)){
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('admin-content').style.display='block';
+            _init();
+        }else{alert('ACCESS DENIED');}
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
 
-    function auth() {
-        if(document.getElementById('u').value === "j.senko" && document.getElementById('p').value === "KU06102009BAsen") {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('admin-content').style.display = 'block';
-            init();
-        }
-    }
+    // Główna inicjalizacja
+    function _init(){
+        // Nasłuchiwanie zmian w bazie - ZOPTYMALIZOWANE
+        db.collection("products").orderBy("createdAt","desc").onSnapshot(snap=>{
+            const list=document.getElementById('p-list');
+            const fragment = document.createDocumentFragment(); // Optymalizacja DOM
+            let b=0, k=0, c=0, v=0;
+            
+            snap.forEach(doc=>{
+                const p=doc.data();
+                (p.category==='beat') ? b++ : k++;
+                c += (p.clicks || 0);
+                v += parseFloat(p.price) || 0;
 
-    function toggleFields() {
-        document.getElementById('mp3-field').style.display = (document.getElementById('p-cat').value === 'beat') ? 'block' : 'none';
-    }
-
-    function init() {
-        db.collection("products").orderBy("createdAt", "desc").onSnapshot(snap => {
-            const list = document.getElementById('p-list');
-            let b=0, k=0, c=0, v=0; list.innerHTML = '';
-            snap.forEach(doc => {
-                const p = doc.data();
-                if(p.category === 'beat') b++; else k++;
-                c += (p.clicks || 0); v += parseFloat(p.price) || 0;
-                list.innerHTML += `<div class="row">
+                const row = document.createElement('div');
+                row.className = 'row';
+                row.innerHTML = `
                     <span><b>${p.name}</b> <small style="color:var(--accent)">[${p.category.toUpperCase()}]</small></span>
                     <div class="actions">
-                        <span class="edit-txt" onclick='openEdit("${doc.id}", ${JSON.stringify(p).replace(/'/g, "&apos;")})'>EDIT</span>
-                        <span class="del-txt" onclick="del('${doc.id}')">DEL</span>
+                        <span class="edit-txt">EDIT</span>
+                        <span class="del-txt">DEL</span>
                     </div>
-                </div>`;
+                `;
+
+                // Eventy bez użycia atrybutów onclick (szybsze)
+                row.querySelector('.edit-txt').onclick = () => _openEdit(doc.id, p);
+                row.querySelector('.del-txt').onclick = () => _del(doc.id);
+                
+                fragment.appendChild(row);
             });
-            document.getElementById('st-b').innerText = b; document.getElementById('st-k').innerText = k;
-            document.getElementById('st-c').innerText = c; document.getElementById('st-v').innerText = v + " zł";
+
+            list.innerHTML = '';
+            list.appendChild(fragment);
+
+            document.getElementById('st-b').textContent = b;
+            document.getElementById('st-k').textContent = k;
+            document.getElementById('st-c').textContent = c;
+            document.getElementById('st-v').textContent = v + " zł";
         });
-        loadSub();
+        _loadSub();
     }
 
-    function openEdit(id, data) {
+    // Toggle pól
+    const pCat = document.getElementById('p-cat');
+    const mp3F = document.getElementById('mp3-field');
+    pCat.onchange = () => mp3F.style.display = (pCat.value === 'beat') ? 'block' : 'none';
+
+    // Edycja produktu
+    function _openEdit(id, data){
         document.getElementById('edit-id').value = id;
         document.getElementById('p-cat').value = data.category;
         document.getElementById('p-n').value = data.name;
@@ -177,68 +140,77 @@
         document.getElementById('p-cov').value = data.cover || "";
         document.getElementById('p-a').value = data.audio || "";
         document.getElementById('p-s').value = data.shopUrl;
-        toggleFields();
+        
+        mp3F.style.display = (data.category === 'beat') ? 'block' : 'none';
         document.getElementById('add-btn').style.display = 'none';
         document.getElementById('upd-btn').style.display = 'block';
         document.getElementById('cnl-btn').style.display = 'block';
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function cancelEdit() {
-        document.getElementById('add-btn').style.display = 'block';
+    document.getElementById('cnl-btn').onclick = function(){
+        this.style.display = 'none';
         document.getElementById('upd-btn').style.display = 'none';
-        document.getElementById('cnl-btn').style.display = 'none';
-        resetForm();
+        document.getElementById('add-btn').style.display = 'block';
+        _reset();
+    };
+
+    function _reset(){
+        ['p-n','p-p','p-cov','p-a','p-s','edit-id'].forEach(id=>document.getElementById(id).value="");
     }
 
-    function resetForm() {
-        ['p-n','p-p','p-cov','p-a','p-s'].forEach(id => document.getElementById(id).value = "");
-    }
+    // Akcje DB
+    document.getElementById('add-btn').onclick = function(){
+        const data = _getForm();
+        if(!data.name) return;
+        db.collection("products").add({...data, clicks: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()})
+          .then(() => { alert("Deployed!"); _reset(); });
+    };
 
-    function addProd() {
-        db.collection("products").add({
-            category: document.getElementById('p-cat').value,
-            name: document.getElementById('p-n').value,
-            price: document.getElementById('p-p').value,
-            cover: document.getElementById('p-cov').value,
-            audio: document.getElementById('p-a').value || "",
-            shopUrl: document.getElementById('p-s').value,
-            clicks: 0,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => { alert("Added!"); resetForm(); });
-    }
-
-    function updateProd() {
+    document.getElementById('upd-btn').onclick = function(){
         const id = document.getElementById('edit-id').value;
-        db.collection("products").doc(id).update({
+        db.collection("products").doc(id).update(_getForm())
+          .then(() => { alert("Updated!"); document.getElementById('cnl-btn').click(); });
+    };
+
+    function _del(id){ if(confirm("Delete?")) db.collection("products").doc(id).delete(); }
+
+    function _getForm(){
+        return {
             category: document.getElementById('p-cat').value,
             name: document.getElementById('p-n').value,
             price: document.getElementById('p-p').value,
             cover: document.getElementById('p-cov').value,
             audio: document.getElementById('p-a').value || "",
             shopUrl: document.getElementById('p-s').value
-        }).then(() => { alert("Updated!"); cancelEdit(); });
+        };
     }
 
-    function del(id) { if(confirm("Delete?")) db.collection("products").doc(id).delete(); }
+    // CMS Engine
+    const subSel = document.getElementById('sub-sel');
+    subSel.onchange = _loadSub;
 
-    function loadSub() {
-        const id = document.getElementById('sub-sel').value;
+    function _loadSub(){
+        const id = subSel.value;
         db.collection("content").doc(id).get().then(doc => {
-            if(doc.exists) {
-                document.getElementById('sub-t').value = doc.data().title || "";
-                document.getElementById('sub-d').value = doc.data().description || "";
-                if(document.getElementById('sub-img')) document.getElementById('sub-img').value = doc.data().imgUrl || "";
-                document.getElementById('img-edit-field').style.display = (id === 'homepage') ? 'block' : 'none';
+            if(doc.exists){
+                const d = doc.data();
+                document.getElementById('sub-t').value = d.title || "";
+                document.getElementById('sub-d').value = d.description || "";
+                const imgF = document.getElementById('img-edit-field');
+                imgF.style.display = (id === 'homepage') ? 'block' : 'none';
+                if(id === 'homepage') document.getElementById('sub-img').value = d.imgUrl || "";
             }
         });
     }
 
-    function saveSub() {
-        const id = document.getElementById('sub-sel').value;
+    document.getElementById('save-sub-btn').onclick = function(){
+        const id = subSel.value;
         const data = { title: document.getElementById('sub-t').value, description: document.getElementById('sub-d').value };
         if(id === 'homepage') data.imgUrl = document.getElementById('sub-img').value;
-        db.collection("content").doc(id).set(data).then(() => alert("Saved!"));
-    }
+        db.collection("content").doc(id).set(data).then(() => alert("Synced!"));
+    };
+})();
 </script>
 </body>
 </html>

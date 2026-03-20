@@ -1,69 +1,29 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHADOW | TOOLS</title>
-    <style>
-        :root { --accent: #ff003c; --bg: #050505; --card: #0f0f0f; --border: rgba(255,255,255,0.08); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { 
-            background: var(--bg); color: white; font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; padding-bottom: 100px;
-        }
-
-        /* Navigation */
-        .nav-bar { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .back-link { color: #555; text-decoration: none; font-weight: 800; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid #222; padding: 8px 15px; border-radius: 12px; transition: 0.3s; }
-        .back-link:hover { color: var(--accent); border-color: var(--accent); }
-
-        .header h1 { letter-spacing: -3px; font-size: 2.5rem; margin: 0; text-transform: uppercase; font-weight: 900; }
-
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
-
-        /* BPM TOOL */
-        .bpm-tool-link {
-            display: block; background: #fff; color: #000; text-decoration: none;
-            padding: 22px; border-radius: 20px; text-align: center; font-weight: 900;
-            font-size: 1.3rem; letter-spacing: 2px; transition: 0.2s;
-        }
-
-        .tool-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 30px; }
-
-        /* Metronome */
-        .metro-wrap { text-align: center; }
-        .led { width: 12px; height: 12px; background: #222; border-radius: 50%; margin: 0 auto 15px; }
-        .led.active { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
-        #bpm-display { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; cursor: pointer; }
-        
-        input[type="range"] { width: 100%; height: 10px; border-radius: 10px; background: #222; -webkit-appearance: none; margin: 30px 0; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 35px; height: 35px; background: #fff; border-radius: 50%; border: 6px solid var(--accent); }
-
-        .btn-main { background: var(--accent); color: white; border: none; padding: 22px; border-radius: 22px; cursor: pointer; font-weight: 900; width: 100%; font-size: 1.2rem; text-transform: uppercase; }
-
-        /* Exercises */
-        .section-label { font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 2px; margin: 25px 0 10px; border-left: 2px solid var(--accent); padding-left: 10px; }
-        .ex-box { background: rgba(255,255,255,0.02); padding: 18px; border-radius: 22px; margin-bottom: 12px; border: 1px solid transparent; }
-        .ex-box b { font-size: 0.65rem; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .ex-box p { margin: 0; font-size: 1rem; font-weight: 600; line-height: 1.4; color: #fff; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SHADOW | TOOLS</title>
+<style>
+:root{--accent:#ff003c;--bg:#050505;--card:#0f0f0f;--border:rgba(255,255,255,.08)}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;outline:0}body{background:var(--bg);color:#fff;font-family:Inter,sans-serif;margin:0;padding:15px;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding-bottom:100px;user-select:none;-webkit-user-select:none}.nav-bar{width:100%;max-width:500px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.back-link{color:#555;text-decoration:none;font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:1px solid #222;padding:8px 15px;border-radius:12px;transition:.3s}.back-link:hover{color:var(--accent);border-color:var(--accent)}.header h1{letter-spacing:-3px;font-size:2.5rem;margin:0;text-transform:uppercase;font-weight:900}.container{width:100%;max-width:500px;display:flex;flex-direction:column;gap:15px}.bpm-tool-link{display:block;background:#fff;color:#000;text-decoration:none;padding:22px;border-radius:20px;text-align:center;font-weight:900;font-size:1.3rem;letter-spacing:2px;transition:.2s}.tool-card{background:var(--card);border:1px solid var(--border);padding:25px;border-radius:30px}.metro-wrap{text-align:center}.led{width:12px;height:12px;background:#222;border-radius:50%;margin:0 auto 15px}.led.active{background:var(--accent);box-shadow:0 0 15px var(--accent)}#bpm-display{font-size:5.5rem;font-weight:900;margin:0;letter-spacing:-5px;line-height:1;cursor:pointer}input[type=range]{width:100%;height:10px;border-radius:10px;background:#222;-webkit-appearance:none;margin:30px 0}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:35px;height:35px;background:#fff;border-radius:50%;border:6px solid var(--accent)}.btn-main{background:var(--accent);color:#fff;border:none;padding:22px;border-radius:22px;cursor:pointer;font-weight:900;width:100%;font-size:1.2rem;text-transform:uppercase}.section-label{font-size:.75rem;color:#444;text-transform:uppercase;letter-spacing:2px;margin:25px 0 10px;border-left:2px solid var(--accent);padding-left:10px}.ex-box{background:rgba(255,255,255,.02);padding:18px;border-radius:22px;margin-bottom:12px;border:1px solid transparent}.ex-box b{font-size:.65rem;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:5px}.ex-box p{margin:0;font-size:1rem;font-weight:600;line-height:1.4;color:#fff}
+</style>
+<script>
+/* Security */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.onkeydown=function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74))||(e.ctrlKey&&e.keyCode==85))return false}
+</script>
 </head>
-<body>
+<body oncontextmenu="return false">
 
     <div class="nav-bar">
         <a href="index.html" class="back-link">← POWRÓT</a>
-        <div style="color:var(--accent); font-weight:900; letter-spacing:2px;">TOOLS</div>
+        <div style="color:var(--accent);font-weight:900;letter-spacing:2px">TOOLS</div>
     </div>
 
-    <div class="header">
-        <h1>SHADOW TOOLS</h1>
-    </div>
+    <div class="header"><h1>SHADOW TOOLS</h1></div>
 
     <div class="container">
-        
         <a href="https://tunebat.com/Analyzer" target="_blank" class="bpm-tool-link">BPM TOOL</a>
-
         <div class="tool-card">
             <div class="metro-wrap">
                 <div class="led" id="led"></div>
@@ -74,130 +34,52 @@
         </div>
 
         <div class="tool-card">
-            <h2 style="color:var(--accent); text-align:center; letter-spacing:3px; margin-bottom:30px;">VOCAL PREP</h2>
-            
+            <h2 style="color:var(--accent);text-align:center;letter-spacing:3px;margin-bottom:30px">VOCAL PREP</h2>
             <div class="section-label">I. ODDECH</div>
-            <div class="ex-box"><b>Pompka</b><p>Szybkie wydechy: "F-F-F-F-F!" (Poczuj pracę brzucha).</p></div>
-            <div class="ex-box"><b>Syczenie</b><p>Wypuszczaj "Ssss" przez minimum 30 sekund.</p></div>
-
+            <div class="ex-box"><b>Pompka</b><p>Szybkie wydechy: "F-F-F-F-F!"</p></div>
+            <div class="ex-box"><b>Syczenie</b><p>Wypuszczaj "Ssss" (>30s).</p></div>
             <div class="section-label">II. ROZLUŹNIENIE</div>
             <div class="ex-box"><b>Motor</b><p>Luźne wargi: "Brrrrrrr".</p></div>
-            <div class="ex-box"><b>Mruczenie</b><p>Zamknięte usta: "Mmmmmm" (czuj wibracje).</p></div>
-
             <div class="section-label">III. ARTYKULACJA</div>
-            <div class="ex-box"><b>Karabin</b><p>P-T-K-P-T-K-P-T-K (ostro i krótko).</p></div>
-            <div class="ex-box"><b>Usta</b><p>Przesadne: "U-I-U-I-U-I" (rozciągaj kąciki ust).</p></div>
-
+            <div class="ex-box"><b>Karabin</b><p>P-T-K-P-T-K (ostro).</p></div>
             <div class="section-label">IV. ŁAMAŃCE FLOW</div>
             <div class="ex-box"><p>"Wyszczebrzeszyły się chrząszcze w trzcinie."</p></div>
-            <div class="ex-box"><p>"Wyrewolwerowany rewolwerowiec wyrewolwerował rewolwer."</p></div>
-            <div class="ex-box"><p>"I cóż, że ze Szwecji, skoro się trzęsie?"</p></div>
             <div class="ex-box"><p>"Szedł Sasza suchą szosą susząc sobie szorty."</p></div>
-            <div class="ex-box"><p>"Król Karol kupił królowej Karolinie korale koloru koralowego."</p></div>
         </div>
     </div>
 
     <script>
-        let isPlaying = false;
-        let tempo = 140;
-        let nextNoteTime = 0;
-        let audioCtx = null;
-        let audioBuffer = null;
-        
-        const led = document.getElementById('led');
-        const bpmSlider = document.getElementById('bpm-slider');
-        const bpmDisplay = document.getElementById('bpm-display');
-        const startBtn = document.getElementById('metro-start');
+    (function(){
+        let _p=false, _t=140, _nT=0, _ctx=null, _buf=null, _lT=0;
+        const l=document.getElementById('led'), s=document.getElementById('bpm-slider'), d=document.getElementById('bpm-display'), b=document.getElementById('metro-start');
 
-        bpmSlider.oninput = function() {
-            tempo = this.value;
-            bpmDisplay.innerText = tempo;
-        };
+        s.oninput=function(){_t=this.value;d.innerText=_t};
 
-        // --- NAPRAWA DŹWIĘKU ---
-        function initAudio() {
-            if (audioCtx) return;
-            
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Tworzymy fizyczny sampel kliknięcia (Woodblock)
-            const sampleRate = audioCtx.sampleRate;
-            const length = 0.05 * sampleRate;
-            audioBuffer = audioCtx.createBuffer(1, length, sampleRate);
-            const data = audioBuffer.getChannelData(0);
-            
-            for (let i = 0; i < length; i++) {
-                let t = i / sampleRate;
-                // Ostre, perkusyjne kliknięcie (Attack -> Decay)
-                data[i] = Math.sin(2 * Math.PI * 1000 * t) * Math.exp(-100 * t);
-            }
+        function _iA(){
+            if(_ctx)return;_ctx=new(window.AudioContext||window.webkitAudioContext)();
+            const sR=_ctx.sampleRate, len=0.05*sR; _buf=_ctx.createBuffer(1,len,sR);
+            const data=_buf.getChannelData(0);
+            for(let i=0;i<len;i++){let t=i/sR;data[i]=Math.sin(2*Math.PI*1000*t)*Math.exp(-100*t)}
         }
 
-        function playClick() {
-            if (!audioCtx || !audioBuffer) return;
-            
-            const source = audioCtx.createBufferSource();
-            source.buffer = audioBuffer;
-            
-            // Gain dla głośności
-            const gainNode = audioCtx.createGain();
-            gainNode.gain.value = 1.0;
-            
-            source.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            led.classList.add('active');
-            setTimeout(() => led.classList.remove('active'), 40);
-            
-            source.start(0);
+        function _pC(){
+            if(!_ctx||!_buf)return;const src=_ctx.createBufferSource();src.buffer=_buf;
+            const g=_ctx.createGain();g.gain.value=1.0;src.connect(g);g.connect(_ctx.destination);
+            l.classList.add('active');setTimeout(()=>l.classList.remove('active'),40);src.start(0);
         }
 
-        function scheduler() {
-            if (!isPlaying) return;
-            
-            while (nextNoteTime < audioCtx.currentTime + 0.1) {
-                playClick();
-                nextNoteTime += 60.0 / tempo;
-            }
-            setTimeout(scheduler, 25);
-        }
+        function _sch(){if(!_p)return;while(_nT<_ctx.currentTime+0.1){_pC();_nT+=60.0/_t}setTimeout(_sch,25)}
 
-        startBtn.onclick = function() {
-            // Pierwsze kliknięcie inicjuje i odblokowuje audio
-            initAudio();
-            
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            isPlaying = !isPlaying;
-            
-            if (isPlaying) {
-                nextNoteTime = audioCtx.currentTime;
-                scheduler();
-                this.innerText = 'STOP CLICK';
-                this.style.background = '#222';
-            } else {
-                this.innerText = 'START CLICK';
-                this.style.background = 'var(--accent)';
-            }
+        b.onclick=function(){
+            _iA();if(_ctx.state==='suspended')_ctx.resume();
+            _p=!_p;if(_p){_nT=_ctx.currentTime;_sch();this.innerText='STOP CLICK';this.style.background='#222'}
+            else{this.innerText='START CLICK';this.style.background='var(--accent)'}
         };
 
-        // Tap Tempo
-        let lastTap = 0;
-        bpmDisplay.onclick = function() {
-            const now = Date.now();
-            if (lastTap > 0) {
-                const diff = now - lastTap;
-                const tappedBpm = Math.round(60000 / diff);
-                if (tappedBpm > 40 && tappedBpm < 220) {
-                    tempo = tappedBpm;
-                    bpmSlider.value = tempo;
-                    bpmDisplay.innerText = tempo;
-                }
-            }
-            lastTap = now;
+        d.onclick=function(){
+            const n=Date.now();if(_lT>0){const df=n-_lT;const tB=Math.round(60000/df);if(tB>40&&tB<220){_t=tB;s.value=_t;d.innerText=_t}}_lT=n;
         };
+    })();
     </script>
 </body>
 </html>

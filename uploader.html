@@ -1,69 +1,77 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>SHADOW | Image Host</title>
-    <style>
-        :root { --bg: #000; --accent: #ff003c; --card: #0a0a0a; --border: rgba(255,255,255,0.08); }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        
-        nav {
-            background: #000; border-bottom: 1px solid #1a1a1a; padding: 12px; 
-            display: flex; flex-direction: row; justify-content: center; gap: 15px; 
-            width: 100%; box-sizing: border-box; margin-bottom: 30px;
-        }
-        nav a { color: #555; text-decoration: none; font-weight: 900; font-size: 0.7rem; letter-spacing: 1px; padding: 10px; }
-        nav a.active { color: #fff; background: #111; border-radius: 8px; }
-
-        .upload-zone { width: 90%; max-width: 600px; background: var(--card); border: 2px dashed #222; padding: 40px; border-radius: 25px; text-align: center; cursor: pointer; position: relative; }
-        .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-        
-        .results-list { width: 90%; max-width: 800px; margin-top: 30px; display: flex; flex-direction: column; gap: 10px; }
-        .result-item { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 10px; display: flex; align-items: center; gap: 15px; }
-        .thumb { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
-        .info { flex: 1; overflow: hidden; }
-        .copy-btn { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 0.7rem; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SHADOW | Image Host</title>
+<style>
+:root{--bg:#000;--accent:#ff003c;--card:#0a0a0a;--border:rgba(255,255,255,.08)}body{background:var(--bg);color:#fff;font-family:Inter,sans-serif;margin:0;padding:0;display:flex;flex-direction:column;align-items:center;user-select:none;-webkit-user-select:none}nav{background:#000;border-bottom:1px solid #1a1a1a;padding:12px;display:flex;flex-direction:row;justify-content:center;gap:15px;width:100%;box-sizing:border-box;margin-bottom:30px}nav a{color:#555;text-decoration:none;font-weight:900;font-size:.7rem;letter-spacing:1px;padding:10px;transition:.3s}nav a.active{color:#fff;background:#111;border-radius:8px}.upload-zone{width:90%;max-width:600px;background:var(--card);border:2px dashed #222;padding:40px;border-radius:25px;text-align:center;cursor:pointer;position:relative;transition:.3s}.upload-zone:hover{border-color:var(--accent);background:rgba(255,0,60,.02)}.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}.results-list{width:90%;max-width:800px;margin-top:30px;display:flex;flex-direction:column;gap:10px}.result-item{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:10px;display:flex;align-items:center;gap:15px;animation:slideIn .3s ease}.thumb{width:50px;height:50px;border-radius:8px;object-fit:cover;border:1px solid #222}.info{flex:1;overflow:hidden;font-size:.8rem}.info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.copy-btn{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:900;cursor:pointer;font-size:.7rem;transition:.2s}.copy-btn:active{transform:scale(.9)}@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<script>
+/* Security Layer */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.onkeydown=function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74))||(e.ctrlKey&&e.keyCode==85))return false}
+</script>
 </head>
-<body>
+<body oncontextmenu="return false">
 
 <nav>
-    <a href="admin.html" style="color: var(--accent);">← POWRÓT</a>
+    <a href="admin.html" style="color:var(--accent)">← POWRÓT</a>
     <a href="converter.html">LINK CONVERTER</a>
     <a href="uploader.html" class="active">IMAGE HOST</a>
 </nav>
 
-<div class="upload-zone">
-    <b>PRZECIĄGNIJ LUB KLIKNIJ (MAX 20 ZDJĘĆ)</b>
-    <input type="file" multiple accept="image/*" onchange="handleFiles(this.files)">
+<div class="upload-zone" id="_dropZ">
+    <b id="_msg">PRZECIĄGNIJ LUB KLIKNIJ (MAX 20 ZDJĘĆ)</b>
+    <input type="file" id="_fInp" multiple accept="image/*">
 </div>
 
-<div class="results-list" id="results-list"></div>
+<div class="results-list" id="_resL"></div>
 
 <script>
-    const IMGBB_API_KEY = '931e2ae178a9b338db4f43062ea43160';
+(function(){
+    // Klucz API zakodowany w Base64
+    const _0xK=['OTMxZTJhZTE3OGE5YjMzOGRiNGY0MzA2MmVhNDMxNjA=','cG9zdA==','aHR0cHM6Ly9hcGkuaW1nYmIuY29tLzEvdXBsb2FkP2tleT0=','TGluayBza29waW93YW55IQ=='];
+    const _0xG=i=>atob(_0xK[i]);
 
-    async function handleFiles(files) {
-        for (let file of files) {
-            const formData = new FormData();
-            formData.append('image', file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.success) addResult(file.name, data.data.url);
-            } catch (e) { console.error(e); }
+    const fI=document.getElementById('_fInp');
+    const rL=document.getElementById('_resL');
+    const mS=document.getElementById('_msg');
+
+    fI.onchange=async function(e){
+        const files=e.target.files;
+        if(!files.length)return;
+        
+        mS.innerText="PRZESYŁANIE...";
+        mS.style.color="var(--accent)";
+
+        for(let f of files){
+            const fd=new FormData();
+            fd.append('image',f);
+            try{
+                const r=await fetch(_0xG(2)+_0xG(0),{method:_0xG(1),body:fd});
+                const d=await r.json();
+                if(d.success)_aR(f.name,d.data.url);
+            }catch(err){console.error(err)}
         }
-    }
+        
+        mS.innerText="PRZECIĄGNIJ LUB KLIKNIJ (MAX 20 ZDJĘĆ)";
+        mS.style.color="#fff";
+        fI.value='';
+    };
 
-    function addResult(name, url) {
-        const list = document.getElementById('results-list');
-        const div = document.createElement('div');
-        div.className = 'result-item';
-        div.innerHTML = `<img src="${url}" class="thumb"><div class="info"><b>${name}</b><br><small>${url}</small></div><button class="copy-btn" onclick="copy('${url}')">KOPIUJ</button>`;
-        list.prepend(div);
+    function _aR(n,u){
+        const d=document.createElement('div');
+        d.className='result-item';
+        d.innerHTML=`<img src="${u}" class="thumb"><div class="info"><b>${n}</b><small style="color:#666">${u}</small></div>`;
+        const b=document.createElement('button');
+        b.className='copy-btn';
+        b.innerText='KOPIUJ';
+        b.onclick=()=>{navigator.clipboard.writeText(u);alert(_0xG(3))};
+        d.appendChild(b);
+        rL.prepend(d);
     }
-
-    function copy(url) { navigator.clipboard.writeText(url); alert("Link skopiowany!"); }
+})();
 </script>
 </body>
 </html>

@@ -1,195 +1,38 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ShadowStore</title>
-    <link rel="icon" type="image/png" href="icon.png">
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
-    <style>
-        :root { 
-            --bg: #050505; 
-            --accent: #ff003c; 
-            --text-secondary: #888;
-        }
-
-        body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            text-align: center; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            overflow-x: hidden;
-        }
-
-        /* Hero Section */
-        .hero-img { 
-            width: 100%; 
-            max-width: 700px; 
-            height: auto; 
-            aspect-ratio: 16/9; 
-            object-fit: cover; 
-            border-radius: 15px; 
-            border: 1px solid #222; 
-            margin-bottom: 20px; 
-            background: #111; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            transition: 0.4s; 
-        }
-
-        h1 { 
-            font-size: calc(2.2rem + 2vw); 
-            margin: 5px 0; 
-            letter-spacing: -2px; 
-            font-weight: 800; 
-            text-transform: uppercase;
-        }
-
-        p { 
-            color: var(--text-secondary); 
-            max-width: 500px; 
-            line-height: 1.6; 
-            margin-bottom: 80px; 
-            font-size: 1rem; 
-        }
-
-        /* --- WYŚRODKOWANA NAWIGACJA --- */
-        .nav-bar { 
-            position: fixed; 
-            bottom: 30px; 
-            left: 50%;
-            transform: translateX(-50%); /* Precyzyjne wyśrodkowanie */
-            display: flex; 
-            gap: 10px; 
-            background: rgba(15,15,15,0.9); 
-            padding: 10px; 
-            border-radius: 50px; 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            z-index: 100; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            width: fit-content;
-            white-space: nowrap;
-        }
-
-        .nav-bar a { 
-            color: white; 
-            text-decoration: none; 
-            padding: 14px 22px; 
-            border-radius: 40px; 
-            font-weight: 800; 
-            font-size: 0.95rem; /* Powiększone litery */
-            transition: 0.3s; 
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.03);
-            text-transform: uppercase;
-        }
-
-        .nav-bar a:hover { 
-            background: rgba(255,255,255,0.1); 
-            transform: translateY(-3px); 
-        }
-
-        .nav-bar a.tools-btn { 
-            border: 1px solid rgba(255,0,60,0.4);
-            color: var(--accent);
-            background: rgba(255,0,60,0.05);
-        }
-
-        .nav-bar a.tools-btn:hover { 
-            background: var(--accent); 
-            color: white;
-        }
-
-        /* Watermark */
-        .watermark { 
-            position: fixed; 
-            bottom: 15px; 
-            right: 20px; 
-            font-size: 10px; 
-            letter-spacing: 3px; 
-            color: rgba(255,255,255,0.1); 
-            font-weight: 900; 
-            text-transform: uppercase; 
-        }
-
-        /* --- OPTYMALIZACJA POD TELEFONY --- */
-        @media (max-width: 480px) { 
-            .nav-bar { 
-                width: 92%; /* Pasek zajmuje prawie całą szerokość ekranu */
-                gap: 5px; 
-                padding: 8px; 
-                bottom: 20px; 
-            }
-            .nav-bar a { 
-                padding: 12px 10px; 
-                font-size: 0.85rem; 
-                flex: 1; /* Każdy przycisk zajmuje równą ilość miejsca */
-                justify-content: center;
-                gap: 5px;
-            }
-            .nav-bar a span { font-size: 1rem; }
-            h1 { font-size: 2.5rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ShadowStore</title>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+<style>
+:root{--bg:#050505;--accent:#ff003c;--text-secondary:#888}body{background:var(--bg);color:#fff;font-family:'Inter',sans-serif;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;box-sizing:border-box;overflow-x:hidden}.hero-img{width:100%;max-width:700px;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:15px;border:1px solid #222;margin-bottom:20px;background:#111;box-shadow:0 20px 50px rgba(0,0,0,.5);transition:.4s}h1{font-size:calc(2.2rem + 2vw);margin:5px 0;letter-spacing:-2px;font-weight:800;text-transform:uppercase}p{color:var(--text-secondary);max-width:500px;line-height:1.6;margin-bottom:80px;font-size:1rem}.nav-bar{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:10px;background:rgba(15,15,15,.9);padding:10px;border-radius:50px;backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);z-index:100;box-shadow:0 10px 40px rgba(0,0,0,.6);width:fit-content;white-space:nowrap}.nav-bar a{color:#fff;text-decoration:none;padding:14px 22px;border-radius:40px;font-weight:800;font-size:.95rem;transition:.3s;letter-spacing:1px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);text-transform:uppercase}.nav-bar a:hover{background:rgba(255,255,255,.1);transform:translateY(-3px)}.nav-bar a.tools-btn{border:1px solid rgba(255,0,60,.4);color:var(--accent);background:rgba(255,0,60,.05)}.nav-bar a.tools-btn:hover{background:var(--accent);color:#fff}.watermark{position:fixed;bottom:15px;right:20px;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.1);font-weight:900;text-transform:uppercase}@media (max-width:480px){.nav-bar{width:92%;gap:5px;padding:8px;bottom:20px}.nav-bar a{padding:12px 10px;font-size:.85rem;flex:1;justify-content:center;gap:5px}.nav-bar a span{font-size:1rem}h1{font-size:2.5rem}}
+</style>
+<script>
+/* Security Layer */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.onkeydown=function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74))||(e.ctrlKey&&e.keyCode==85))return false}
+</script>
 </head>
-<body>
-
-    <div class="watermark">® Z3RO 2026</div>
-
-    <img id="h-img" src="" class="hero-img" style="display:none" alt="Shadow Store Hero">
-    <h1 id="h-title">LOADING...</h1>
-    <p id="h-desc">Connecting to Shadow Engine...</p>
-
-    <nav class="nav-bar">
-        <a href="beats.html"><span>🎹</span> BITS</a>
-        <a href="kits.html"><span>📦</span> KITS</a>
-        <a href="tools.html" class="tools-btn"><span>🛠️</span> TOOLS</a>
-    </nav>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDLj6TIdHvupZhXTgf2fideGGZSgBkgOHM",
-            authDomain: "shadowstore-49ff4.firebaseapp.com",
-            projectId: "shadowstore-49ff4",
-            storageBucket: "shadowstore-49ff4.firebasestorage.app",
-            messagingSenderId: "286001305055",
-            appId: "1:286001305055:web:81e1762b09058fadb6a06a"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        function render(data) {
-            document.getElementById('h-title').innerText = data.title || "SHADOW STORE";
-            document.getElementById('h-desc').innerText = data.description || "Premium Beats & Drum Kits.";
-            if(data.imgUrl) {
-                const img = document.getElementById('h-img');
-                img.src = data.imgUrl;
-                img.style.display = 'block';
-            }
-        }
-
-        const cache = localStorage.getItem('cache_home');
-        if(cache) render(JSON.parse(cache));
-
-        db.collection("content").doc("homepage").onSnapshot((doc) => {
-            if(doc.exists) {
-                const freshData = doc.data();
-                render(freshData);
-                localStorage.setItem('cache_home', JSON.stringify(freshData));
-            }
-        });
-    </script>
+<body oncontextmenu="return false">
+<div class="watermark">® Z3RO 2026</div>
+<img id="h-img" src="" class="hero-img" style="display:none">
+<h1 id="h-title">LOADING...</h1>
+<p id="h-desc">Initializing Shadow Engine...</p>
+<nav class="nav-bar">
+<a href="beats.html"><span>🎹</span> BITS</a>
+<a href="kits.html"><span>📦</span> KITS</a>
+<a href="tools.html" class="tools-btn"><span>🛠️</span> TOOLS</a>
+</nav>
+<script>
+const _0x5c21=['Y29udGVudA==','aG9tZXBhZ2U=','b25TbmFwc2hvdA==','ZXhpc3Rz','ZGF0YQ==','Y2FjaGVfaG9tZQ==','SExPQURJTkcuLi4=','U0hBRE9XIFNUT1JF','U2hhZG93IEVuZ2luZSBSZWFkeQ==','QUl6YVN5RExqNlRJZEh2dXBaaFhUZ2YyZmlkZUdHWlNna2dPSE0=','c2hhZG93c3RvcmUtNDlmZjQuZmlyZWJhc2VhcHAuY29t','c2hhZG93c3RvcmUtNDlmZjQ=','c2hhZG93c3RvcmUtNDlmZjQuZmlyZWJhc2Vhc2UuYXBw','Mjg2MDAxMzA1MDU1','MToyODYwMDEzMDUwNTU6d2ViOjgxZTE3NjJiMDkwNThmYWRiNmEwNmE='];
+const _0x1a2b=p=>atob(_0x5c21[p]);
+const firebaseConfig={apiKey:_0x1a2b(9),authDomain:_0x1a2b(10),projectId:_0x1a2b(11),storageBucket:_0x1a2b(12),messagingSenderId:_0x1a2b(13),appId:_0x1a2b(14)};
+firebase.initializeApp(firebaseConfig);const db=firebase.firestore();
+function _0x3e2r(_0x4d2a){document.getElementById('h-title').innerText=_0x4d2a.title||_0x1a2b(7);document.getElementById('h-desc').innerText=_0x4d2a.description||_0x1a2b(8);if(_0x4d2a.imgUrl){const img=document.getElementById('h-img');img.src=_0x4d2a.imgUrl;img.style.display='block'}}
+const _0x9c1a=localStorage.getItem(_0x1a2b(5));if(_0x9c1a)_0x3e2r(JSON.parse(_0x9c1a));
+db.collection(_0x1a2b(0)).doc(_0x1a2b(1)).onSnapshot(doc=>{if(doc.exists){const d=doc.data();_0x3e2r(d);localStorage.setItem(_0x1a2b(5),JSON.stringify(d))}});
+</script>
 </body>
 </html>

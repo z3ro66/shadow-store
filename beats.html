@@ -1,50 +1,21 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShadowStore | Beats</title>
-    <link rel="icon" type="image/png" href="icon.png">
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
-    <style>
-        :root { --bg: #050505; --accent: #ff003c; --card: #0e0e0e; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 40px; padding-bottom: 120px; }
-        .back-btn { position: fixed; top: 20px; left: 20px; color: #555; text-decoration: none; font-size: 14px; z-index: 100; transition: 0.3s; }
-        .back-btn:hover { color: var(--accent); }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; }
-        .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 12px; text-align: center; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); border-color: #333; }
-        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
-        
-        .play-btn { background: white; color: black; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .buy-btn { display: block; background: var(--accent); color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.3s; }
-        .buy-btn:hover { box-shadow: 0 0 15px var(--accent); }
-
-        #player-bar { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(15px);
-            border-top: 1px solid #222; padding: 15px 0; 
-            display: none; flex-direction: column; align-items: center; z-index: 1000;
-        }
-        .player-info { margin-bottom: 8px; font-size: 0.9rem; font-weight: bold; color: #fff; }
-        .player-controls { display: flex; align-items: center; gap: 20px; width: 90%; max-width: 600px; }
-        
-        .progress-container { flex-grow: 1; height: 6px; background: #222; border-radius: 3px; cursor: pointer; position: relative; }
-        .progress-bar { height: 100%; background: var(--accent); width: 0%; border-radius: 3px; position: relative; }
-        .progress-bar::after { content: ''; position: absolute; right: -4px; top: -4px; width: 14px; height: 14px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-        
-        .time-display { font-family: monospace; font-size: 12px; color: #888; min-width: 40px; }
-        .main-play-pause { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
-
-        /* Styl dla limitu */
-        .limit-reached { background: #444 !important; }
-        .limit-msg { color: var(--accent); font-size: 0.7rem; text-transform: uppercase; margin-top: 2px; }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ShadowStore | Beats</title>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+<style>
+:root{--bg:#050505;--accent:#ff003c;--card:#0e0e0e}body{background:var(--bg);color:#fff;font-family:'Inter',sans-serif;margin:0;padding:40px;padding-bottom:120px;user-select:none;-webkit-user-select:none}.back-btn{position:fixed;top:20px;left:20px;color:#555;text-decoration:none;font-size:14px;z-index:100;transition:.3s}.back-btn:hover{color:var(--accent)}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;margin-top:40px}.card{background:var(--card);border:1px solid #1a1a1a;padding:15px;border-radius:12px;text-align:center;transition:.3s}.card:hover{transform:translateY(-5px);border-color:#333}.card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;margin-bottom:15px}.play-btn{background:#fff;color:#000;border:none;width:100%;padding:12px;border-radius:8px;cursor:pointer;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}.buy-btn{display:block;background:var(--accent);color:#fff;text-decoration:none;padding:12px;border-radius:8px;font-weight:700;transition:.3s}.buy-btn:hover{box-shadow:0 0 15px var(--accent)}#player-bar{position:fixed;bottom:0;left:0;width:100%;background:rgba(5,5,5,.95);backdrop-filter:blur(15px);border-top:1px solid #222;padding:15px 0;display:none;flex-direction:column;align-items:center;z-index:1000}.player-info{margin-bottom:8px;font-size:.9rem;font-weight:700;color:#fff}.player-controls{display:flex;align-items:center;gap:20px;width:90%;max-width:600px}.progress-container{flex-grow:1;height:6px;background:#222;border-radius:3px;cursor:pointer;position:relative}.progress-bar{height:100%;background:var(--accent);width:0%;border-radius:3px;position:relative}.progress-bar::after{content:'';position:absolute;right:-4px;top:-4px;width:14px;height:14px;background:#fff;border-radius:50%;box-shadow:0 0 10px var(--accent)}.time-display{font-family:monospace;font-size:12px;color:#888;min-width:40px}.main-play-pause{background:#fff;border:none;width:400px;max-width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center}.limit-reached{background:#444!important}
+</style>
+<script>
+/* Security */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.onkeydown=function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74))||(e.ctrlKey&&e.keyCode==85))return false}
+</script>
 </head>
-<body>
+<body oncontextmenu="return false">
     <a href="index.html" class="back-btn">← POWRÓT</a>
     <h1 id="b-title">...</h1>
     <p id="b-desc" style="color:#888"></p>
@@ -63,115 +34,61 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDLj6TIdHvupZhXTgf2fideGGZSgBkgOHM",
-            authDomain: "shadowstore-49ff4.firebaseapp.com",
-            projectId: "shadowstore-49ff4",
-            storageBucket: "shadowstore-49ff4.firebasestorage.app",
-            appId: "1:286001305055:web:81e1762b09058fadb6a06a"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const _0xBeatArr = ['YmVhdHMtc2VjdGlvbg==','Y29udGVudA==','YmVhdHNfcGFnZQ==','b25TbmFwc2hvdA==','ZXhpc3Rz','cHJvZHVjdHM=','Y2F0ZWdvcnk=','YmVhdA==','Y3JlYXRlZEF0','QUl6YVN5RExqNlRJZEh2dXBaaFhUZ2YyZmlkZUdHWlNna2dPSE0=','c2hhZG93c3RvcmUtNDlmZjQuZmlyZWJhc2VhcHAuY29t','c2hhZG93c3RvcmUtNDlmZjQ=','c2hhZG93c3RvcmUtNDlmZjQuZmlyZWJhc2Vhc2UuYXBw','Mjg2MDAxMzA1MDU1','MToyODYwMDEzMDUwNTU6d2ViOjgxZTE3NjJiMDkwNThmYWRiNmEwNmE=','TElNSVQgUFJFVklFVyAoNDJzKSAtIEtVUCBCSVQgQUJZIFVTTFlTWkXEMyBDQUZMT8WaxIY='];
+        const _0xX2 = (i) => atob(_0xBeatArr[i]);
+        
+        const fCfg = { apiKey: _0xX2(9), authDomain: _0xX2(10), projectId: _0xX2(11), storageBucket: _0xX2(12), messagingSenderId: _0xX2(13), appId: _0xX2(14) };
+        firebase.initializeApp(fCfg); const db = firebase.firestore();
+        const L_S = 42; let _a = new Audio();
 
-        // Stała limitu sekund
-        const LIMIT_SEC = 42;
-
-        db.collection("content").doc("beats_page").onSnapshot(doc => {
-            if(doc.exists) {
-                document.getElementById('b-title').innerText = doc.data().title;
-                document.getElementById('b-desc').innerText = doc.data().description;
-            }
-        });
-
-        db.collection("products").where("category", "==", "beat").onSnapshot(snap => {
-            const g = document.getElementById('beats-grid');
-            g.innerHTML = '';
-            let prods = [];
-            snap.forEach(doc => prods.push({id: doc.id, ...doc.data()}));
-            prods.sort((a,b) => b.createdAt - a.createdAt);
-
-            prods.forEach(p => {
-                g.innerHTML += `<div class="card">
-                    <img src="${p.cover || 'https://via.placeholder.com/300'}">
-                    <h3>${p.name}</h3><p>${p.price} PLN</p>
-                    <button class="play-btn" onclick="initAudio('${p.audio}', '${p.name.replace(/'/g, "")}')">▶ PREVIEW</button>
-                    <a href="${p.shopUrl}" onclick="clickBtn('${p.id}')" target="_blank" class="buy-btn">BUY</a>
-                </div>`;
+        db.collection(_0xX2(1)).doc(_0xX2(2)).onSnapshot(d => { if(d.exists){ document.getElementById('b-title').innerText = d.data().title; document.getElementById('b-desc').innerText = d.data().description; }});
+        db.collection(_0xX2(5)).where(_0xX2(6), "==", _0xX2(7)).onSnapshot(s => {
+            const g = document.getElementById('beats-grid'); g.innerHTML = '';
+            let p = []; s.forEach(x => p.push({id: x.id, ...x.data()}));
+            p.sort((a,b) => b.createdAt - a.createdAt);
+            p.forEach(i => {
+                g.innerHTML += `<div class="card"><img src="${i.cover||'https://via.placeholder.com/300'}"><h3>${i.name}</h3><p>${i.price} PLN</p><button class="play-btn" onclick="initAudio('${i.audio}','${i.name.replace(/'/g,"")}')">▶ PREVIEW</button><a href="${i.shopUrl}" onclick="clickBtn('${i.id}')" target="_blank" class="buy-btn">BUY</a></div>`;
             });
         });
 
-        let audio = new Audio();
-        const pBar = document.getElementById('player-bar');
-        const pTrack = document.getElementById('p-track-name');
-        const pBtn = document.getElementById('master-play');
-        const progBar = document.getElementById('prog-bar');
-        const progCont = document.getElementById('prog-cont');
-
-        function initAudio(url, name) {
-            if(!url) return;
-            if(audio.src === url) {
-                if(audio.currentTime >= LIMIT_SEC) {
-                    audio.currentTime = 0; // Resetuj jeśli ktoś klika znów w ten sam zablokowany bit
-                }
-                toggleAudio(); 
-                return; 
-            }
-            
-            audio.pause();
-            audio.src = url;
-            audio.play();
-            pTrack.innerText = name;
-            pTrack.style.color = "#fff";
-            pBar.style.display = 'flex';
-            pBtn.innerText = "⏸";
-            progBar.classList.remove('limit-reached');
+        function initAudio(u, n) {
+            if(!u) return;
+            if(_a.src === u) { if(_a.currentTime >= L_S) _a.currentTime = 0; toggleAudio(); return; }
+            _a.pause(); _a.src = u; _a.play();
+            const t = document.getElementById('p-track-name'); t.innerText = n; t.style.color = "#fff";
+            document.getElementById('player-bar').style.display = 'flex';
+            document.getElementById('master-play').innerText = "⏸";
+            document.getElementById('prog-bar').classList.remove('limit-reached');
         }
 
         function toggleAudio() {
-            if(audio.currentTime >= LIMIT_SEC) return; // Blokada przycisku Play po limicie
-            if(audio.paused) { audio.play(); pBtn.innerText = "⏸"; } 
-            else { audio.pause(); pBtn.innerText = "▶"; }
+            if(_a.currentTime >= L_S) return;
+            if(_a.paused) { _a.play(); document.getElementById('master-play').innerText = "⏸"; }
+            else { _a.pause(); document.getElementById('master-play').innerText = "▶"; }
         }
 
-        audio.ontimeupdate = () => {
-            // Sprawdzenie limitu
-            if(audio.currentTime >= LIMIT_SEC) {
-                audio.pause();
-                audio.currentTime = LIMIT_SEC; // Ustaw na sztywno 42s
-                pBtn.innerText = "▶";
-                pTrack.innerText = "LIMIT PREVIEW (42s) - KUP BIT ABY USŁYSZEĆ CAŁOŚĆ";
-                pTrack.style.color = "var(--accent)";
-                progBar.classList.add('limit-reached');
+        _a.ontimeupdate = () => {
+            if(_a.currentTime >= L_S) {
+                _a.pause(); _a.currentTime = L_S;
+                document.getElementById('master-play').innerText = "▶";
+                const t = document.getElementById('p-track-name'); t.innerText = _0xX2(15);
+                t.style.color = "var(--accent)";
+                document.getElementById('prog-bar').classList.add('limit-reached');
             }
-
-            // Obliczanie paska względem limitu lub pełnego czasu
-            const currentLimit = (audio.duration < LIMIT_SEC) ? audio.duration : LIMIT_SEC;
-            const perc = (audio.currentTime / currentLimit) * 100;
-            progBar.style.width = perc + "%";
-            
-            document.getElementById('curr-time').innerText = formatTime(audio.currentTime);
-            document.getElementById('total-time').innerText = formatTime(currentLimit);
+            const curL = (_a.duration < L_S) ? _a.duration : L_S;
+            const perc = (_a.currentTime / curL) * 100;
+            document.getElementById('prog-bar').style.width = perc + "%";
+            document.getElementById('curr-time').innerText = fT(_a.currentTime);
+            document.getElementById('total-time').innerText = fT(curL);
         };
 
-        progCont.onclick = (e) => {
-            const width = progCont.clientWidth;
-            const clickX = e.offsetX;
-            const currentLimit = (audio.duration < LIMIT_SEC) ? audio.duration : LIMIT_SEC;
-            const newTime = (clickX / width) * currentLimit;
-            
-            if(newTime <= LIMIT_SEC) {
-                audio.currentTime = newTime;
-                if(newTime < LIMIT_SEC && audio.paused) toggleAudio();
-            }
+        document.getElementById('prog-cont').onclick = (e) => {
+            const curL = (_a.duration < L_S) ? _a.duration : L_S;
+            _a.currentTime = (e.offsetX / e.currentTarget.clientWidth) * curL;
         };
 
-        function formatTime(sec) {
-            let m = Math.floor(sec / 60);
-            let s = Math.floor(sec % 60);
-            return m + ":" + (s < 10 ? "0" + s : s);
-        }
-
-        function clickBtn(id) { db.collection("products").doc(id).update({ clicks: firebase.firestore.FieldValue.increment(1) }); }
+        function fT(s) { let m = Math.floor(s/60), r = Math.floor(s%60); return m+":"+(r<10?"0"+r:r); }
+        function clickBtn(id) { db.collection(_0xX2(5)).doc(id).update({ clicks: firebase.firestore.FieldValue.increment(1) }); }
     </script>
 </body>
 </html>
