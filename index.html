@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ShadowStore | Official</title>
     <link rel="icon" type="image/png" href="icon.png">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -11,13 +11,15 @@
         :root { 
             --bg: #050505; 
             --accent: #ff003c; 
-            --text-secondary: #888;
+            --card: rgba(20, 20, 20, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-secondary: #666;
         }
 
         body { 
             background: var(--bg); 
             color: white; 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', -apple-system, sans-serif; 
             margin: 0; 
             display: flex; 
             flex-direction: column; 
@@ -27,113 +29,135 @@
             text-align: center; 
             padding: 20px; 
             box-sizing: border-box; 
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         /* Hero Section */
         .hero-img { 
             width: 100%; 
-            max-width: 700px; 
+            max-width: 600px; 
             height: auto; 
             aspect-ratio: 16/9; 
             object-fit: cover; 
-            border-radius: 15px; 
-            border: 1px solid #222; 
-            margin-bottom: 20px; 
+            border-radius: 30px; 
+            border: 1px solid var(--border); 
+            margin-bottom: 25px; 
             background: #111; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6); 
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         
-        .hero-img:hover {
-            transform: scale(1.02);
-            border-color: var(--accent);
-        }
-
         h1 { 
-            font-size: calc(2.2rem + 2vw); 
-            margin: 5px 0; 
-            letter-spacing: -2px; 
-            font-weight: 800; 
+            font-size: clamp(2.5rem, 8vw, 4rem); 
+            margin: 0; 
+            letter-spacing: -4px; 
+            font-weight: 900; 
             text-transform: uppercase;
+            line-height: 0.9;
         }
 
         p { 
             color: var(--text-secondary); 
-            max-width: 500px; 
-            line-height: 1.6; 
-            margin-bottom: 80px; 
-            font-size: 1rem; 
+            max-width: 400px; 
+            line-height: 1.5; 
+            margin: 15px 0 100px 0; 
+            font-size: 0.95rem; 
+            font-weight: 500;
         }
 
-        /* Zaktualizowana Nawigacja */
+        /* --- NOWE MENU --- */
         .nav-bar { 
             position: fixed; 
-            bottom: 30px; 
+            bottom: 40px; 
             display: flex; 
-            gap: 8px; 
-            background: rgba(15,15,15,0.85); 
-            padding: 8px; 
-            border-radius: 50px; 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.08); 
+            gap: 10px; 
+            background: rgba(10,10,10,0.7); 
+            padding: 10px; 
+            border-radius: 35px; 
+            backdrop-filter: blur(25px) saturate(180%); 
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--border); 
             z-index: 100; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
         .nav-bar a { 
-            color: white; 
+            color: #eee; 
             text-decoration: none; 
-            padding: 12px 24px; 
-            border-radius: 40px; 
-            font-weight: 600; 
-            font-size: 0.85rem; 
-            transition: 0.3s; 
-            letter-spacing: 1px;
+            padding: 14px 22px; 
+            border-radius: 28px; 
+            font-weight: 800; 
+            font-size: 0.75rem; 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: rgba(255,255,255,0.03);
         }
 
-        .nav-bar a:hover { 
+        /* Style dla poszczególnych przycisków */
+        .nav-bar a:nth-child(1):hover { /* BITS */
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .nav-bar a:nth-child(2):hover { /* KITS */
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* TOOLS - zostaje jako Twój wyróżnik */
+        .nav-bar a.tools-btn { 
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            color: var(--accent);
+        }
+
+        .nav-bar a.tools-btn:hover { 
             background: var(--accent); 
-            transform: translateY(-2px); 
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 0, 60, 0.4);
         }
 
-        /* Logo / Watermark */
+        /* Watermark */
         .watermark { 
             position: fixed; 
             bottom: 15px; 
-            right: 20px; 
-            font-size: 10px; 
-            letter-spacing: 3px; 
-            color: rgba(255,255,255,0.1); 
+            font-size: 9px; 
+            letter-spacing: 4px; 
+            color: rgba(255,255,255,0.15); 
             font-weight: 900; 
-            pointer-events: none; 
             text-transform: uppercase; 
-            z-index: 10; 
         }
 
         @media (max-width: 480px) { 
-            .nav-bar { width: 90%; justify-content: space-around; bottom: 20px; }
-            .nav-bar a { padding: 10px 15px; font-size: 0.75rem; }
-            .watermark { right: 50%; transform: translateX(50%); bottom: 5px; } 
+            .nav-bar { width: 92%; gap: 6px; padding: 8px; bottom: 30px; }
+            .nav-bar a { padding: 12px 14px; font-size: 0.65rem; letter-spacing: 1px; }
+            h1 { font-size: 2.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="watermark">® Z3RO 2026</div>
+    <div class="watermark">SHADOW ENGINE v2.0</div>
 
     <img id="h-img" src="" class="hero-img" style="display:none" alt="Shadow Store Hero">
-    <h1 id="h-title">LOADING...</h1>
-    <p id="h-desc">Connecting to Shadow Engine...</p>
+    <h1 id="h-title">SHADOW</h1>
+    <p id="h-desc">Premium sounds for the next generation.</p>
 
     <nav class="nav-bar">
-        <a href="beats.html">BITS</a>
-        <a href="kits.html">DRUM KITS</a>
-        <a href="tools.html" style="border: 1px solid rgba(255,0,60,0.3)">🛠️ TOOLS</a>
+        <a href="beats.html"><span>🎹</span> BITS</a>
+        <a href="kits.html"><span>📦</span> KITS</a>
+        <a href="tools.html" class="tools-btn"><span>🛠️</span> TOOLS</a>
     </nav>
 
     <script>
-        // Twoja konfiguracja Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDLj6TIdHvupZhXTgf2fideGGZSgBkgOHM",
             authDomain: "shadowstore-49ff4.firebaseapp.com",
@@ -145,11 +169,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Funkcja renderująca dane na stronie
         function render(data) {
-            document.getElementById('h-title').innerText = data.title || "SHADOW STORE";
-            document.getElementById('h-desc').innerText = data.description || "Premium Beats & Drum Kits for modern producers.";
-            
+            if(data.title) document.getElementById('h-title').innerText = data.title;
+            if(data.description) document.getElementById('h-desc').innerText = data.description;
             if(data.imgUrl) {
                 const img = document.getElementById('h-img');
                 img.src = data.imgUrl;
@@ -157,25 +179,14 @@
             }
         }
 
-        // 1. Szybki start: Ładuj z pamięci podręcznej (LocalStorage)
         const cache = localStorage.getItem('cache_home');
-        if(cache) {
-            render(JSON.parse(cache));
-        }
+        if(cache) render(JSON.parse(cache));
 
-        // 2. Real-time update: Pobierz świeże dane z Firebase
         db.collection("content").doc("homepage").onSnapshot((doc) => {
             if(doc.exists) {
-                const freshData = doc.data();
-                render(freshData);
-                // Zapisz do cache na następną wizytę
-                localStorage.setItem('cache_home', JSON.stringify(freshData));
-            } else {
-                console.log("No such document in Firebase!");
-                document.getElementById('h-title').innerText = "SHADOW STORE";
+                render(doc.data());
+                localStorage.setItem('cache_home', JSON.stringify(doc.data()));
             }
-        }, (error) => {
-            console.error("Firebase Error:", error);
         });
     </script>
 </body>
