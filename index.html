@@ -11,15 +11,13 @@
         :root { 
             --bg: #050505; 
             --accent: #ff003c; 
-            --card: rgba(20, 20, 20, 0.6);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-secondary: #666;
+            --text-secondary: #888;
         }
 
         body { 
             background: var(--bg); 
             color: white; 
-            font-family: 'Inter', -apple-system, sans-serif; 
+            font-family: 'Inter', sans-serif; 
             margin: 0; 
             display: flex; 
             flex-direction: column; 
@@ -29,127 +27,130 @@
             text-align: center; 
             padding: 20px; 
             box-sizing: border-box; 
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         /* Hero Section */
         .hero-img { 
             width: 100%; 
-            max-width: 600px; 
+            max-width: 700px; 
             height: auto; 
             aspect-ratio: 16/9; 
             object-fit: cover; 
-            border-radius: 30px; 
-            border: 1px solid var(--border); 
-            margin-bottom: 25px; 
+            border-radius: 15px; 
+            border: 1px solid #222; 
+            margin-bottom: 20px; 
             background: #111; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6); 
-            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            transition: 0.4s; 
         }
-        
+
         h1 { 
-            font-size: clamp(2.5rem, 8vw, 4rem); 
-            margin: 0; 
-            letter-spacing: -4px; 
-            font-weight: 900; 
+            font-size: calc(2.2rem + 2vw); 
+            margin: 5px 0; 
+            letter-spacing: -2px; 
+            font-weight: 800; 
             text-transform: uppercase;
-            line-height: 0.9;
         }
 
         p { 
             color: var(--text-secondary); 
-            max-width: 400px; 
-            line-height: 1.5; 
-            margin: 15px 0 100px 0; 
-            font-size: 0.95rem; 
-            font-weight: 500;
+            max-width: 500px; 
+            line-height: 1.6; 
+            margin-bottom: 80px; 
+            font-size: 1rem; 
         }
 
-        /* --- NOWE MENU --- */
+        /* --- WYŚRODKOWANA NAWIGACJA --- */
         .nav-bar { 
             position: fixed; 
-            bottom: 40px; 
+            bottom: 30px; 
+            left: 50%;
+            transform: translateX(-50%); /* Precyzyjne wyśrodkowanie */
             display: flex; 
             gap: 10px; 
-            background: rgba(10,10,10,0.7); 
+            background: rgba(15,15,15,0.9); 
             padding: 10px; 
-            border-radius: 35px; 
-            backdrop-filter: blur(25px) saturate(180%); 
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid var(--border); 
+            border-radius: 50px; 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.1); 
             z-index: 100; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            width: fit-content;
+            white-space: nowrap;
         }
 
         .nav-bar a { 
-            color: #eee; 
+            color: white; 
             text-decoration: none; 
             padding: 14px 22px; 
-            border-radius: 28px; 
+            border-radius: 40px; 
             font-weight: 800; 
-            font-size: 0.75rem; 
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+            font-size: 0.95rem; /* Powiększone litery */
+            transition: 0.3s; 
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border: 1px solid transparent;
             background: rgba(255,255,255,0.03);
+            text-transform: uppercase;
         }
 
-        /* Style dla poszczególnych przycisków */
-        .nav-bar a:nth-child(1):hover { /* BITS */
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
+        .nav-bar a:hover { 
+            background: rgba(255,255,255,0.1); 
+            transform: translateY(-3px); 
         }
 
-        .nav-bar a:nth-child(2):hover { /* KITS */
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-        }
-
-        /* TOOLS - zostaje jako Twój wyróżnik */
         .nav-bar a.tools-btn { 
-            background: rgba(255, 0, 60, 0.1);
-            border: 1px solid rgba(255, 0, 60, 0.3);
+            border: 1px solid rgba(255,0,60,0.4);
             color: var(--accent);
+            background: rgba(255,0,60,0.05);
         }
 
         .nav-bar a.tools-btn:hover { 
             background: var(--accent); 
             color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(255, 0, 60, 0.4);
         }
 
         /* Watermark */
         .watermark { 
             position: fixed; 
             bottom: 15px; 
-            font-size: 9px; 
-            letter-spacing: 4px; 
-            color: rgba(255,255,255,0.15); 
+            right: 20px; 
+            font-size: 10px; 
+            letter-spacing: 3px; 
+            color: rgba(255,255,255,0.1); 
             font-weight: 900; 
             text-transform: uppercase; 
         }
 
+        /* --- OPTYMALIZACJA POD TELEFONY --- */
         @media (max-width: 480px) { 
-            .nav-bar { width: 92%; gap: 6px; padding: 8px; bottom: 30px; }
-            .nav-bar a { padding: 12px 14px; font-size: 0.65rem; letter-spacing: 1px; }
-            h1 { font-size: 2.8rem; }
+            .nav-bar { 
+                width: 92%; /* Pasek zajmuje prawie całą szerokość ekranu */
+                gap: 5px; 
+                padding: 8px; 
+                bottom: 20px; 
+            }
+            .nav-bar a { 
+                padding: 12px 10px; 
+                font-size: 0.85rem; 
+                flex: 1; /* Każdy przycisk zajmuje równą ilość miejsca */
+                justify-content: center;
+                gap: 5px;
+            }
+            .nav-bar a span { font-size: 1rem; }
+            h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="watermark">SHADOW ENGINE v2.0</div>
+    <div class="watermark">® Z3RO 2026</div>
 
     <img id="h-img" src="" class="hero-img" style="display:none" alt="Shadow Store Hero">
-    <h1 id="h-title">SHADOW</h1>
-    <p id="h-desc">Premium sounds for the next generation.</p>
+    <h1 id="h-title">LOADING...</h1>
+    <p id="h-desc">Connecting to Shadow Engine...</p>
 
     <nav class="nav-bar">
         <a href="beats.html"><span>🎹</span> BITS</a>
@@ -170,8 +171,8 @@
         const db = firebase.firestore();
 
         function render(data) {
-            if(data.title) document.getElementById('h-title').innerText = data.title;
-            if(data.description) document.getElementById('h-desc').innerText = data.description;
+            document.getElementById('h-title').innerText = data.title || "SHADOW STORE";
+            document.getElementById('h-desc').innerText = data.description || "Premium Beats & Drum Kits.";
             if(data.imgUrl) {
                 const img = document.getElementById('h-img');
                 img.src = data.imgUrl;
@@ -184,8 +185,9 @@
 
         db.collection("content").doc("homepage").onSnapshot((doc) => {
             if(doc.exists) {
-                render(doc.data());
-                localStorage.setItem('cache_home', JSON.stringify(doc.data()));
+                const freshData = doc.data();
+                render(freshData);
+                localStorage.setItem('cache_home', JSON.stringify(freshData));
             }
         });
     </script>
