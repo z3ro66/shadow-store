@@ -18,12 +18,10 @@
         .card:hover { transform: translateY(-5px); border-color: #333; }
         .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
         
-        /* PRZYCISKI */
         .play-btn { background: white; color: black; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .buy-btn { display: block; background: var(--accent); color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.3s; }
         .buy-btn:hover { box-shadow: 0 0 15px var(--accent); }
 
-        /* --- NOWY PANEL ODTWARZACZA (NA DOLE) --- */
         #player-bar { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
             background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(15px);
@@ -40,6 +38,10 @@
         .time-display { font-family: monospace; font-size: 12px; color: #888; min-width: 40px; }
         .main-play-pause { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
+        /* Styl dla limitu */
+        .limit-reached { background: #444 !important; }
+        .limit-msg { color: var(--accent); font-size: 0.7rem; text-transform: uppercase; margin-top: 2px; }
+
     </style>
 </head>
 <body>
@@ -49,13 +51,13 @@
     <div class="grid" id="beats-grid"></div>
 
     <div id="player-bar">
-        <div class="player-info" id="p-track-name">Wybrany bit...</div>
+        <div id="p-track-name" class="player-info">Wybrany bit...</div>
         <div class="player-controls">
             <span class="time-display" id="curr-time">0:00</span>
             <div class="progress-container" id="prog-cont">
                 <div class="progress-bar" id="prog-bar"></div>
             </div>
-            <span class="time-display" id="total-time">0:00</span>
+            <span class="time-display" id="total-time">0:42</span>
             <button class="main-play-pause" id="master-play" onclick="toggleAudio()">▶</button>
         </div>
     </div>
@@ -70,6 +72,9 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        // Stała limitu sekund
+        const LIMIT_SEC = 42;
 
         db.collection("content").doc("beats_page").onSnapshot(doc => {
             if(doc.exists) {
@@ -95,7 +100,6 @@
             });
         });
 
-        // --- LOGIKA ODTWARZACZA ---
         let audio = new Audio();
         const pBar = document.getElementById('player-bar');
         const pTrack = document.getElementById('p-track-name');
@@ -105,35 +109,60 @@
 
         function initAudio(url, name) {
             if(!url) return;
-            if(audio.src === url) { toggleAudio(); return; } // Jeśli ten sam, to tylko pauza
+            if(audio.src === url) {
+                if(audio.currentTime >= LIMIT_SEC) {
+                    audio.currentTime = 0; // Resetuj jeśli ktoś klika znów w ten sam zablokowany bit
+                }
+                toggleAudio(); 
+                return; 
+            }
             
             audio.pause();
             audio.src = url;
             audio.play();
             pTrack.innerText = name;
+            pTrack.style.color = "#fff";
             pBar.style.display = 'flex';
             pBtn.innerText = "⏸";
+            progBar.classList.remove('limit-reached');
         }
 
         function toggleAudio() {
+            if(audio.currentTime >= LIMIT_SEC) return; // Blokada przycisku Play po limicie
             if(audio.paused) { audio.play(); pBtn.innerText = "⏸"; } 
             else { audio.pause(); pBtn.innerText = "▶"; }
         }
 
-        // Aktualizacja czasu i paska
         audio.ontimeupdate = () => {
-            const perc = (audio.currentTime / audio.duration) * 100;
+            // Sprawdzenie limitu
+            if(audio.currentTime >= LIMIT_SEC) {
+                audio.pause();
+                audio.currentTime = LIMIT_SEC; // Ustaw na sztywno 42s
+                pBtn.innerText = "▶";
+                pTrack.innerText = "LIMIT PREVIEW (42s) - KUP BIT ABY USŁYSZEĆ CAŁOŚĆ";
+                pTrack.style.color = "var(--accent)";
+                progBar.classList.add('limit-reached');
+            }
+
+            // Obliczanie paska względem limitu lub pełnego czasu
+            const currentLimit = (audio.duration < LIMIT_SEC) ? audio.duration : LIMIT_SEC;
+            const perc = (audio.currentTime / currentLimit) * 100;
             progBar.style.width = perc + "%";
+            
             document.getElementById('curr-time').innerText = formatTime(audio.currentTime);
-            if(!isNaN(audio.duration)) document.getElementById('total-time').innerText = formatTime(audio.duration);
+            document.getElementById('total-time').innerText = formatTime(currentLimit);
         };
 
-        // Przewijanie po kliknięciu w pasek
         progCont.onclick = (e) => {
             const width = progCont.clientWidth;
             const clickX = e.offsetX;
-            const duration = audio.duration;
-            audio.currentTime = (clickX / width) * duration;
+            const currentLimit = (audio.duration < LIMIT_SEC) ? audio.duration : LIMIT_SEC;
+            const newTime = (clickX / width) * currentLimit;
+            
+            if(newTime <= LIMIT_SEC) {
+                audio.currentTime = newTime;
+                if(newTime < LIMIT_SEC && audio.paused) toggleAudio();
+            }
         };
 
         function formatTime(sec) {
